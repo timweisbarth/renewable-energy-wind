@@ -4,6 +4,19 @@ import model as m
 
 def pipeline(df, uk, shifts, non_nan_percentage,
              col_to_be_lagged, val_ratio, scalers):
+    """ Wrapper for pipeline_worker
+
+     Parameters:
+    -----------
+    see pipeline_worker for documentation
+
+    Returns:
+    -------
+    list of dictionaries
+        Each dictionary contains key properties of each time horizon model
+
+    """
+
     models = []
     for i, shift in enumerate(shifts):
         model = pipeline_worker(df,
@@ -19,6 +32,31 @@ def pipeline(df, uk, shifts, non_nan_percentage,
 
 def pipeline_worker(df, uk, shift, non_nan_percentage,
                     col_to_be_lagged, val_ratio, scaler):
+    """ Executes the  ML-pipeline as specified below
+
+     Parameters:
+    -----------
+    df: pd.DataFrame
+      data
+    uk: bool
+      Is the input df from the uk dataset?
+    shift: int ∈ {1,6,144}
+      Number of time steps the target column gets shifted
+    non_nan_percentage: int ∈ [0,100]
+        Require non_nan_percentage % many non-NaN values for a column to remain
+    col_to_be_lagged: list
+        Columns of which lagged values will be added to df
+    val_ratio: float ∈ [0,1]
+        |Training set| * val_ratio = |Validation set|
+    scaler: sklearn.preprocessing
+        e.g. MinMaxScaler
+
+    Returns:
+    -------
+    dictionary
+        Contains key properties of the evaluated model
+    """
+
     X_train, X_val, X_test, y_train, y_val, y_test = \
         pp.all_preproc_steps(df=df,
                              uk=uk,
@@ -46,6 +84,7 @@ def pipeline_worker(df, uk, shift, non_nan_percentage,
 
     print(f"Finished training model {name}")
 
-    return {"name": name, "rmse": rmse, "mae": mae,
-            "X_test": X_test, "predictions": predictions, "truths": truths
-            }
+    return {
+        "name": name, "rmse": rmse, "mae": mae,
+        "X_test": X_test, "predictions": predictions, "truths": truths
+    }

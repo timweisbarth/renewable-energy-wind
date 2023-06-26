@@ -4,6 +4,21 @@ import numpy as np
 
 
 def plot_models(name_of_farm, models):
+    """Plots the predictions and vs. y_test of the models
+
+    Parameters:
+    -----------
+    name_of_farm: string
+        which of the farms is plotted?
+    models: list of dictionaries
+        Each list entry contains a dictionary of the key properties
+        of each model
+
+
+    Returns:
+    -------
+    NoneType
+    """
     fig, ax = plt.subplots(3, 1, figsize=(10, 10))
 
     for i, model in enumerate(models):
@@ -23,6 +38,22 @@ def plot_models(name_of_farm, models):
 
 
 def plot_metrics(name_of_farm, models):
+    """ASCII style table of the performance metrics of the models
+
+    Parameters:
+    -----------
+    name_of_farm: string
+        which of the farms is plotted?
+    models: list of dictionaries
+        Each list entry contains a dictionary of the key properties
+        of each model
+
+    Returns:
+    -------
+    NoneType
+    """
+
+    # Benchmarks as provided by task
     benchmarks = {
         "Kelmarsh": [
             {"rmse": 145.602811, "mae": 91.553768},
@@ -52,7 +83,6 @@ def plot_metrics(name_of_farm, models):
         ] for (model, bm) in zip(models, benchmarks)
     ]
 
-    # Define the headers
     headers = ['Model Name', 'RMSE', 'Benchmark_RMSE', 'MAE', 'Benchmark_MAE']
 
     # Create the table
