@@ -14,7 +14,6 @@ def plot_models(name_of_farm, models):
         Each list entry contains a dictionary of the key properties
         of a model
 
-
     Returns:
     -------
     NoneType

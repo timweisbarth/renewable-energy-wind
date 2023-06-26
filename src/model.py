@@ -1,5 +1,7 @@
 import xgboost as xgb
+from sklearn.linear_model import LinearRegression
 from sklearn.metrics import mean_squared_error, mean_absolute_error
+import numpy as np
 
 
 def scale_data(scaler, X_train, X_val, X_test, y_train, y_val, y_test):
@@ -46,13 +48,17 @@ def train_model(type, X_train_arr, X_val_arr, y_train_arr, y_val_arr):
         Scaled training, evaluation and test sets
     """
 
-    params = {"xgboost": {"n_estimators": 1000, "early_stopping_rounds": 50}}
+    params = {"xgboost": {"n_estimators": 1000, "early_stopping_rounds": 50},
+              "linreg":{}}
     params = params[type]
 
-    model = xgb.XGBRegressor(**params)
-    model.fit(X_train_arr, y_train_arr,
-              eval_set=[(X_train_arr, y_train_arr), (X_val_arr, y_val_arr)],
-              verbose=False)
+    model = {"xgboost": xgb.XGBRegressor(**params), 
+             "linreg": LinearRegression(**params)}[type]
+    model.fit(np.concatenate([X_train_arr, X_val_arr]),np.concatenate([y_train_arr,y_val_arr]))
+
+    #model.fit(X_train_arr, y_train_arr,
+    #          eval_set=[(X_train_arr, y_train_arr), (X_val_arr, y_val_arr)],
+    #          verbose=False)
     
     return model
 
@@ -64,7 +70,7 @@ def inverse_scaler(reg, scaler, X_test_arr, y_test_arr):
     Parameters:
     -----------
     reg:
-        Name of model choice
+        Learnt model choice
     scaler: sklearn.preprocessing
         e.g. MinMaxScaler
     X_test_arr, y_test_arr: ndarrays

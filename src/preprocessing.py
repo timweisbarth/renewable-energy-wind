@@ -73,7 +73,7 @@ def preproc2_nans(df, uk, non_nan_percentage):
         # Mostly NaNs until 2016-01-21
         df = df["2016-01-21":]
 
-    # Require 70% non-NaN values for column to remain
+    # Require non_nan_percemtage% non-NaN values for column to remain
     df = df.dropna(thresh=df.shape[0]*non_nan_percentage/100, axis=1)
     df = df.interpolate(limit_area='inside')  # Interpolate for inside NaNs
     df = df.fillna(df.bfill()).fillna(df.ffill())  # outside NaNs
@@ -133,9 +133,8 @@ def preproc3_featgen(df, shift, col_to_be_lagged):
     lags = {1: [1, 2, 3, 6, 12, 24], 6: [1, 2, 6, 12, 24, 48],
             144: [1, 2, 6, 12, 24, 48, 100, 144]}[shift]
     for lag in lags:
-        df[f"power_lag{lag}"] = df["power"].shift(lag)
         for col_name in col_to_be_lagged:
-            df[f"{col_name}_lag_{lag}"] = df[f"{col_name}"].shift(lag)
+            df[f"{col_name}_lag{lag}"] = df[f"{col_name}"].shift(lag)
 
     # Include month and hour of each row
     df = (
@@ -146,7 +145,8 @@ def preproc3_featgen(df, shift, col_to_be_lagged):
     df = generate_cyclic_features(df, 'hour', 24, 0)
     df = generate_cyclic_features(df, 'month', 12, 1)
 
-    df = df.dropna(axis=0)  # Drop nans introduced by lags and shift
+    # Drop nans introduced by lags and shift
+    df = df.dropna(axis=0)
     return df
 
 

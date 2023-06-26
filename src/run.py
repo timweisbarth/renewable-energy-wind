@@ -2,7 +2,7 @@ import preprocessing as pp
 import model as m
 
 
-def pipeline(df, uk, shifts, non_nan_percentage,
+def pipeline(df, model_name, uk, shifts, non_nan_percentage,
              col_to_be_lagged, val_ratio, scalers):
     """ Wrapper for pipeline_worker
 
@@ -20,6 +20,7 @@ def pipeline(df, uk, shifts, non_nan_percentage,
     models = []
     for i, shift in enumerate(shifts):
         model = pipeline_worker(df,
+                                model_name,
                                 uk,
                                 shift,
                                 non_nan_percentage,
@@ -30,7 +31,7 @@ def pipeline(df, uk, shifts, non_nan_percentage,
     return models
 
 
-def pipeline_worker(df, uk, shift, non_nan_percentage,
+def pipeline_worker(df, model_name, uk, shift, non_nan_percentage,
                     col_to_be_lagged, val_ratio, scaler):
     """ Executes the  ML-pipeline as specified below
 
@@ -38,6 +39,8 @@ def pipeline_worker(df, uk, shift, non_nan_percentage,
     -----------
     df: pd.DataFrame
       data
+    model_name: string
+        Name of the model to be used
     uk: bool
       Is the input df from the uk dataset?
     shift: int ∈ {1,6,144}
@@ -74,7 +77,7 @@ def pipeline_worker(df, uk, shift, non_nan_percentage,
                      y_val,
                      y_test)
 
-    reg = m.train_model("xgboost", X_train_arr,
+    reg = m.train_model(model_name, X_train_arr,
                         X_val_arr, y_train_arr, y_val_arr)
     predictions, truths = m.inverse_scaler(reg, scaler, X_test_arr, y_test_arr)
     rmse, mae = m.model_metrics(predictions, truths)
