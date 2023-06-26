@@ -128,7 +128,6 @@ def flatten_multiindex(df, features_with_height_dim, features_with_range_dim):
         - (set(features_with_height_dim).union(set(features_with_range_dim))))
     df_rest = df_rest[features_without_extra_dim]
 
-    # TODO: Caution, test whether Height dim gets eliminated in all cases
     if features_with_height_dim:
         df_combined = pd.merge(
             df_rest,
@@ -163,7 +162,6 @@ def load_uebb_data(from_raw):
 
     if from_raw:
         # Load .nc file and convert to dataframe
-        # TODO: Adjust to ueps, set index necessary?
         uebb = xarray.open_dataset('../data/raw/brazil/UEBB_v1.nc')
         uebb = uebb.to_dataframe()
 

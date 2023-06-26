@@ -96,8 +96,7 @@ def generate_cyclic_features(df, col_name, period, start_num=0):
     --------
     pd.DataFrame
     """
-
-    # TODO: How does it work?
+    
     kwargs = {
         f'sin_{col_name}': lambda x: np.sin(2*np.pi*(
             df[col_name] - start_num)/period),
