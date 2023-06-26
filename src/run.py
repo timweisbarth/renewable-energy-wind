@@ -1,7 +1,6 @@
 import preprocessing as pp
 import model as m
 
-
 def pipeline(df, uk, shifts, non_nan_percentage, col_to_be_lagged, val_ratio, scalers):
   models = []
   for i,shift in enumerate(shifts):
