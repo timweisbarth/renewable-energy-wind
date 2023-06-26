@@ -1,4 +1,3 @@
-from sklearn.preprocessing import MinMaxScaler
 import xgboost as xgb
 from sklearn.metrics import mean_squared_error, mean_absolute_error
 
@@ -13,11 +12,12 @@ def scale_data(scaler, X_train, X_val, X_test, y_train, y_val, y_test):
     y_train_arr = scaler.fit_transform(y_train)
     y_val_arr = scaler.transform(y_val)
     y_test_arr = scaler.transform(y_test)
-    return X_train_arr, X_val_arr, X_test_arr, y_train_arr, y_val_arr, y_test_arr
+
+    return X_train_arr, X_val_arr, X_test_arr, \
+        y_train_arr, y_val_arr, y_test_arr
+
 
 # train model according to type
-
-
 def train_model(type, X_train_arr, X_val_arr, y_train_arr, y_val_arr):
 
     params = {"xgboost": {"n_estimators": 1000, "early_stopping_rounds": 50}}
@@ -26,7 +26,7 @@ def train_model(type, X_train_arr, X_val_arr, y_train_arr, y_val_arr):
     model = xgb.XGBRegressor(**params)
     model.fit(X_train_arr, y_train_arr,
               eval_set=[(X_train_arr, y_train_arr), (X_val_arr, y_val_arr)],
-              verbose=False)  # Change verbose to True if you want to see it train
+              verbose=False)
     return model
 
 

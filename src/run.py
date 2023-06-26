@@ -2,7 +2,8 @@ import preprocessing as pp
 import model as m
 
 
-def pipeline(df, uk, shifts, non_nan_percentage, col_to_be_lagged, val_ratio, scalers):
+def pipeline(df, uk, shifts, non_nan_percentage,
+             col_to_be_lagged, val_ratio, scalers):
     models = []
     for i, shift in enumerate(shifts):
         model = pipeline_worker(df,
@@ -16,7 +17,8 @@ def pipeline(df, uk, shifts, non_nan_percentage, col_to_be_lagged, val_ratio, sc
     return models
 
 
-def pipeline_worker(df, uk, shift, non_nan_percentage, col_to_be_lagged, val_ratio, scaler):
+def pipeline_worker(df, uk, shift, non_nan_percentage,
+                    col_to_be_lagged, val_ratio, scaler):
     X_train, X_val, X_test, y_train, y_val, y_test = \
         pp.all_preproc_steps(df=df,
                              uk=uk,

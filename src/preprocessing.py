@@ -8,7 +8,9 @@ https://towardsdatascience.com/building-rnn-lstm-and-gru-for-time-series-using-p
 """
 
 
-def all_preproc_steps(df, uk, shift, non_nan_percentage, col_to_be_lagged, val_ratio):
+def all_preproc_steps(
+        df, uk, shift, non_nan_percentage,
+        col_to_be_lagged, val_ratio):
     """Apply all preprocessing steps. For description see individual functions.
 
     Returns:
@@ -51,7 +53,7 @@ def preproc1_names_and_index(df, uk):
 
 
 def preproc2_nans(df, uk, non_nan_percentage):
-    """Drop columns if too many nans. Interpolate for inside NaNs, 
+    """Drop columns if too many nans. Interpolate for inside NaNs,
     fill rest with next valid value
 
     Parameters:
@@ -97,15 +99,17 @@ def generate_cyclic_features(df, col_name, period, start_num=0):
 
     # TODO: How does it work?
     kwargs = {
-        f'sin_{col_name}': lambda x: np.sin(2*np.pi*(df[col_name] - start_num)/period),
-        f'cos_{col_name}': lambda x: np.cos(2*np.pi*(df[col_name] - start_num)/period)
+        f'sin_{col_name}': lambda x: np.sin(2*np.pi*(
+            df[col_name] - start_num)/period),
+        f'cos_{col_name}': lambda x: np.cos(2*np.pi*(
+            df[col_name] - start_num)/period)
     }
 
     return df.assign(**kwargs).drop(columns=[col_name])
 
 
 def preproc3_featgen(df, shift, col_to_be_lagged):
-    """Generate interesting features in order to make time-series data 
+    """Generate interesting features in order to make time-series data
     a supervised problem. Encode time dependencies through lags.
 
     Parameters:
@@ -122,7 +126,8 @@ def preproc3_featgen(df, shift, col_to_be_lagged):
     pd.DataFrame
     """
 
-    # Generate shifted target column y s.t. features_(t) are in one row with y_(t+shift)
+    # Generate shifted target column y s.t. features_(t)
+    # are in one row with y_(t+shift)
     df[f"power_next_{shift}"] = df["power"].shift(-shift)
 
     # Add lagged data to dataframe, lags depend on time horizon of prediction
@@ -156,12 +161,12 @@ def preproc4_train_val_test_split(df, uk, target_col, val_ratio):
       Is df from the uk wind farm?
     target_col: string
       Column that is to be predicted
-    val_ratio: float 
+    val_ratio: float
       ratio of the training set that is used for validation
 
     Returns:
     -------
-    6x pd.DataFrame,...,pd.DataFrame 
+    6x pd.DataFrame,...,pd.DataFrame
       X_train, X_val, X_test, y_train, y_val, y_test
     """
 
@@ -171,11 +176,11 @@ def preproc4_train_val_test_split(df, uk, target_col, val_ratio):
 
     # Split data in train and test according to given benchmark
     if uk:
-        X_train, X_test, y_train, y_test = X[:'2020-07-01'], X['2020-07-01':], \
-            y[:'2020-07-01'], y['2020-07-01':]
+        X_train, X_test, y_train, y_test = X[:'2020-07-01'], \
+            X['2020-07-01':], y[:'2020-07-01'], y['2020-07-01':]
     else:
-        X_train, X_test, y_train, y_test = X[:'2014-05-18'], X['2014-05-18':], \
-            y[:'2014-05-18'], y['2014-05-18':]
+        X_train, X_test, y_train, y_test = X[:'2014-05-18'], \
+            X['2014-05-18':], y[:'2014-05-18'], y['2014-05-18':]
 
     # Split data in train and validation set
     X_train, X_val, y_train, y_val = train_test_split(X_train, y_train,

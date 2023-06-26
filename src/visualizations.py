@@ -1,6 +1,5 @@
 import matplotlib.pyplot as plt
 from tabulate import tabulate
-import pandas as pd
 import numpy as np
 
 
@@ -18,7 +17,8 @@ def plot_models(name_of_farm, models):
 
     plt.tight_layout()  # To prevent overlapping of subplots
     fig.suptitle(
-        f"{name_of_farm} wind farm: Comparison of power predictions", fontsize=13, y=1.02)
+        f"{name_of_farm} wind farm: Comparison of power predictions",
+        fontsize=13, y=1.02)
     plt.show()
 
 
