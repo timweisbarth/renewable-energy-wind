@@ -1,9 +1,13 @@
+# Local experiments:
+exp-local/
+
 #OS junk files
 [Tt]humbs.db
 *.DS_Store
 
 # Ignore data as too large
-data/
+data/raw/
+data/processed
 
 # Ignore TODO list
 TODO.txt
