@@ -12,7 +12,7 @@ def plot_models(name_of_farm, models):
         which of the farms is plotted?
     models: list of dictionaries
         Each list entry contains a dictionary of the key properties
-        of each model
+        of a model
 
 
     Returns:
