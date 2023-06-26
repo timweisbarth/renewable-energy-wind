@@ -41,7 +41,7 @@ def pipeline_worker(df, uk, shift, non_nan_percentage,
     uk: bool
       Is the input df from the uk dataset?
     shift: int ∈ {1,6,144}
-      Number of time steps the target column gets shifted
+      Number of time steps the target column gets shifted e.g. 1 hour = 6 * 10min
     non_nan_percentage: int ∈ [0,100]
         Require non_nan_percentage % many non-NaN values for a column to remain
     col_to_be_lagged: list
