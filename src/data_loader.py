@@ -45,7 +45,7 @@ def load_kelmarsh_data(from_raw):
 
 
 def flatten_multiindex(df, features_with_height_dim, features_with_range_dim):
-    """ Flatten the multiindex rows of the df by generating new columns. 
+    """ Flatten the multiindex rows of the df by generating new columns.
 
         Example:
         --------
@@ -59,7 +59,7 @@ def flatten_multiindex(df, features_with_height_dim, features_with_range_dim):
             |            |2              |220
             ...
 
-        results in 
+        results in
 
             |time_index  | feature_vals1  | feature_vals2
             |----------------------------------
@@ -123,16 +123,23 @@ def flatten_multiindex(df, features_with_height_dim, features_with_range_dim):
 
     # Remaining part of df
     df_rest = df.groupby(level=0).mean()
-    features_without_extra_dim = list(set(list(df.columns))
-                                      - (set(features_with_height_dim).union(set(features_with_range_dim))))
+    features_without_extra_dim = list(
+        set(list(df.columns))
+        - (set(features_with_height_dim).union(set(features_with_range_dim))))
     df_rest = df_rest[features_without_extra_dim]
 
     # TODO: Caution, test whether Height dim gets eliminated in all cases
     if features_with_height_dim:
         df_combined = pd.merge(
-            df_rest, df_height, left_index=True, right_index=True).drop(columns=["Height"])
+            df_rest,
+            df_height,
+            left_index=True,
+            right_index=True).drop(columns=["Height"])
     if features_with_range_dim:
-        df_combined = pd.merge(df_combined, df_range, left_index=True, right_index=True).drop(
+        df_combined = pd.merge(df_combined,
+                               df_range,
+                               left_index=True,
+                               right_index=True).drop(
             columns=["Range", "range", "Turbine"])
 
     return df_combined
@@ -145,7 +152,7 @@ def load_uebb_data(from_raw):
     Parameters
     ----------
     from_raw : bool
-        If false, data will be loaded from csv created last time 
+        If false, data will be loaded from csv created last time
         load_uebb_data(True) was run
 
     Returns
@@ -169,8 +176,12 @@ def load_uebb_data(from_raw):
         uebb = uebb.loc[uebb["Turbine"] == 1.0].drop(columns=["Turbine"])
 
         # Which features have an additional dimension?
-        features_with_height_dim = ["wind_speed", "wind_direction", "wind_speed_std", "wind_direction_std", "wind_speed_max",
-                                    "wind_speed_min", "wind_speed_cube", "air_temperature", "relative_humidity"]
+        features_with_height_dim = [
+            "wind_speed", "wind_direction", "wind_speed_std",
+            "wind_direction_std", "wind_speed_max",
+            "wind_speed_min", "wind_speed_cube", "air_temperature",
+            "relative_humidity"
+        ]
 
         uebb = flatten_multiindex(uebb, features_with_height_dim, [])
 
@@ -188,7 +199,7 @@ def load_ueps_data(from_raw):
     Parameters
     ----------
     from_raw : bool
-        If false, data will be loaded from csv created last time 
+        If false, data will be loaded from csv created last time
         load_ueps_data(True) was run
 
     Returns
@@ -205,11 +216,18 @@ def load_ueps_data(from_raw):
         ueps = ueps.reset_index(["Height", "Range"])
 
         # Which features have an additional dimension?
-        features_with_range_dim = ["lidar_wind_speed", "lidar_wind_direction", "lidar_wind_speed_std", "lidar_ws_u",
-                                   "lidar_ws_v", "lidar_ws_w", "lidar_availability"]
-        features_with_height_dim = ["wind_speed", "wind_direction", "wind_speed_std", "wind_direction_std", "wind_speed_max",
-                                    "wind_speed_min", "wind_speed_cube", "air_temperature", "relative_humidity",
-                                    "UST", "UST_flag", "HS", "HS_flag", "TKE", "LMO"]
+        features_with_range_dim = [
+            "lidar_wind_speed", "lidar_wind_direction",
+            "lidar_wind_speed_std", "lidar_ws_u",
+            "lidar_ws_v", "lidar_ws_w", "lidar_availability"
+            ]
+        features_with_height_dim = [
+            "wind_speed", "wind_direction",
+            "wind_speed_std", "wind_direction_std", "wind_speed_max",
+            "wind_speed_min", "wind_speed_cube", "air_temperature",
+            "relative_humidity", "UST", "UST_flag", "HS", "HS_flag",
+            "TKE", "LMO"
+            ]
 
         ueps = flatten_multiindex(
             ueps, features_with_height_dim, features_with_range_dim)
