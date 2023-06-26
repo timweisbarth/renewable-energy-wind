@@ -8,7 +8,7 @@
     
 3. **Store data in `data/raw` folder** such that it looks like this:
 <p align="center">
-<img src="/structure_of_data_folder.png" width="300">
+<img src="fig/structure_of_data_folder.png" width="300">
 </p>
 
 
