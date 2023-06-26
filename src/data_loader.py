@@ -40,8 +40,6 @@ def load_kelmarsh_data(from_raw):
 
 def flatten_multiindex(df,features_with_height_dim,features_with_range_dim):
     """ Flatten the multiindex rows of the df by generating new columns. 
-    Note that there are no features in the df that have an additional
-    height and range dim.
      
         Example:
         --------
