@@ -6,7 +6,7 @@
   - Two Brazilian datasets: https://zenodo.org/record/1475197#.ZD6iMxXP2WC
   - Uk dataset: https://zenodo.org/record/5841834#.ZEajKXbP2BQ
     
-3. **Store data in project s.t. it looks like this:![Optional image alt text](relative_path_to_your_image)
+3. **Store data in project s.t. it looks like this:![Oops, something went wrong](structure_of_data_folder)
 
 5. **Firstly look at `doc` folder**
     - Run `create_processed_data.ipynb` once in the beginning
