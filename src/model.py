@@ -4,11 +4,9 @@ from sklearn.metrics import mean_squared_error, mean_absolute_error
 import numpy as np
 from autosklearn.regression import AutoSklearnRegressor
 from autosklearn.metrics import mean_squared_error as mse
-import h2o
-from h2o.automl import H2OAutoML
 
-#import os
-#os.environ["OPENBLAS_NUM_THREADS"] = "4"
+import os
+os.environ["OPENBLAS_NUM_THREADS"] = "4"
 
 
 
@@ -62,43 +60,24 @@ def train_model(type, X_train, X_val, y_train, y_val):
     }
     params = params[type]
 
+    os.environ["OPENBLAS_NUM_THREADS"] = "4"
+
     #if type == "auto":
-        # Instantiate the regressor
-        #reg = AutoSklearnRegressor(time_left_for_this_task=120, # run auto-sklearn for at most 2min
-        #                   per_run_time_limit=30, # spend at most 30 sec for each model training
-        #                   metric=mse)
+    #    # Instantiate the regressor
+    #    reg = AutoSklearnRegressor(time_left_for_this_task=120, # run auto-sklearn for at most 2min
+    #                       per_run_time_limit=30, # spend at most 30 sec for each model training
+    #                       metric=mse,
+    #                       n_jobs=4,  # This will use 4 cores
+    #                       memory_limit=2048
+    #                       )
+   # 
+   #     # Fit the model
+    #    reg.fit(X_train, y_train)
+    #    # Summary statistics
+    #    print(reg.sprint_statistics())
+    #    # Detailed information of all models found
+    #    print(reg.show_models())
         
-
-
-        # Fit the model
-        #reg.fit(X_train, y_train)
-
-        # Summary statistics
-        #print(reg.sprint_statistics())
-
-        # Detailed information of all models found
-        #print(reg.show_models())
-        
-        ##################################
-        #h2o.init()
-#
-        ## Load data into H2O
-        #train = h2o.H2OFrame(X_train)
-        #test = h2o.H2OFrame(X_val)
-#
-        ## Identify predictors and response
-        #x = train.columns
-        #y = 'power_next_1'
-        #x.remove(y)
-#
-        ## Run AutoML
-        #aml = H2OAutoML(max_models=20, seed=1)
-        #aml.train(x=x, y=y, training_frame=train)
-#
-        ## View the AutoML Leaderboard
-        #lb = aml.leaderboard
-        #print(lb.head(rows=lb.nrows))  # Print all rows instead of default (10 rows)
-
 
     if type == "linreg":
         model = LinearRegression(**params)
