@@ -52,13 +52,14 @@ def train_model(type, X_train_arr, X_val_arr, y_train_arr, y_val_arr):
               "linreg":{}}
     params = params[type]
 
-    model = {"xgboost": xgb.XGBRegressor(**params), 
-             "linreg": LinearRegression(**params)}[type]
-    model.fit(np.concatenate([X_train_arr, X_val_arr]),np.concatenate([y_train_arr,y_val_arr]))
-
-    #model.fit(X_train_arr, y_train_arr,
-    #          eval_set=[(X_train_arr, y_train_arr), (X_val_arr, y_val_arr)],
-    #          verbose=False)
+    if type == "linreg":
+        model = LinearRegression(**params)
+        model.fit(np.concatenate([X_train_arr, X_val_arr]),np.concatenate([y_train_arr,y_val_arr]))
+    if type == "xgboost":
+        model = xgb.XGBRegressor(**params)
+        model.fit(X_train_arr, y_train_arr,
+            eval_set=[(X_train_arr, y_train_arr), (X_val_arr, y_val_arr)],
+            verbose=False)
     
     return model
 
@@ -81,10 +82,11 @@ def inverse_scaler(reg, scaler, X_test_arr, y_test_arr):
     tuple:
         Scaled training, evaluation and test sets
     """
-
+    truths = scaler.inverse_transform(y_test_arr)
     predictions = scaler.inverse_transform(
         reg.predict(X_test_arr).reshape(-1, 1))
-    truths = scaler.inverse_transform(y_test_arr)
+    predictions = np.array([0 if pred < 0 else 2000 if pred > 2000 else pred for pred in predictions])
+    
     
     return predictions, truths
 
