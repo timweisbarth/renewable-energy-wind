@@ -79,7 +79,10 @@ def pipeline_worker(df, model_name, uk, shift, non_nan_percentage,
 
     reg = m.train_model(model_name, X_train_arr,
                         X_val_arr, y_train_arr, y_val_arr)
-    predictions, truths = m.inverse_scaler(reg, scaler, X_test_arr, y_test_arr)
+
+    predictions, truths = m.predict_and_inv_scaler(reg, uk, scaler, X_test_arr, y_test_arr)
+    
+
     rmse, mae = m.model_metrics(predictions, truths)
 
     name = {1: "10min horizon", 6: "1 hour horizon",

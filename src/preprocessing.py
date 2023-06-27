@@ -133,6 +133,7 @@ def preproc3_featgen(df, shift, col_to_be_lagged):
     lags = {1: [1, 2, 3, 6, 12, 24], 6: [1, 2, 6, 12, 24, 48],
             144: [1, 2, 6, 12, 24, 48, 100, 144]}[shift]
     for lag in lags:
+        
         for col_name in col_to_be_lagged:
             df[f"{col_name}_lag{lag}"] = df[f"{col_name}"].shift(lag)
 

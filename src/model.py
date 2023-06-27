@@ -2,6 +2,12 @@ import xgboost as xgb
 from sklearn.linear_model import LinearRegression
 from sklearn.metrics import mean_squared_error, mean_absolute_error
 import numpy as np
+from autosklearn.regression import AutoSklearnRegressor
+from autosklearn.metrics import mean_squared_error as mse
+
+import os
+os.environ["OPENBLAS_NUM_THREADS"] = "4"
+
 
 
 def scale_data(scaler, X_train, X_val, X_test, y_train, y_val, y_test):
@@ -32,7 +38,7 @@ def scale_data(scaler, X_train, X_val, X_test, y_train, y_val, y_test):
         y_train_arr, y_val_arr, y_test_arr
 
 
-def train_model(type, X_train_arr, X_val_arr, y_train_arr, y_val_arr):
+def train_model(type, X_train, X_val, y_train, y_val):
     """ Trains model chosen by type
 
      Parameters:
@@ -49,29 +55,50 @@ def train_model(type, X_train_arr, X_val_arr, y_train_arr, y_val_arr):
     """
 
     params = {"xgboost": {"n_estimators": 1000, "early_stopping_rounds": 50},
-              "linreg":{}}
+              "linreg":{},
+              "auto":{}
+    }
     params = params[type]
+
+    if type == "auto":
+        # Instantiate the regressor
+        reg = AutoSklearnRegressor(time_left_for_this_task=360, # run auto-sklearn for at most 2min
+                           per_run_time_limit=50, # spend at most 30 sec for each model training
+                           metric=mse,
+                           memory_limit=1024)
+        
+
+
+        # Fit the model
+        reg.fit(np.concatenate([X_train, X_val]), np.concatenate([y_train,y_val]))
+
+        # Summary statistics
+        print(reg.sprint_statistics())
+
+        # Detailed information of all models found
+        print(reg.show_models())
 
     if type == "linreg":
         model = LinearRegression(**params)
-        model.fit(np.concatenate([X_train_arr, X_val_arr]),np.concatenate([y_train_arr,y_val_arr]))
+        model.fit(np.concatenate([X_train, X_val]),np.concatenate([y_train,y_val]))
     if type == "xgboost":
         model = xgb.XGBRegressor(**params)
-        model.fit(X_train_arr, y_train_arr,
-            eval_set=[(X_train_arr, y_train_arr), (X_val_arr, y_val_arr)],
+        model.fit(X_train, y_train,
+            eval_set=[(X_train, y_train), (X_val, y_val)],
             verbose=False)
     
     return model
 
 
-def inverse_scaler(reg, scaler, X_test_arr, y_test_arr):
-    """Inverts the scaling introduced by scaler on the test data and the
-    predictions
+def predict_and_inv_scaler(reg, uk, scaler, X_test_arr, y_test_arr):
+    """Returns model's predictions on test data and inverts the scaling
 
     Parameters:
     -----------
     reg:
         Learnt model choice
+    uk:
+        Is the model of the uk dataset?
     scaler: sklearn.preprocessing
         e.g. MinMaxScaler
     X_test_arr, y_test_arr: ndarrays
@@ -80,14 +107,25 @@ def inverse_scaler(reg, scaler, X_test_arr, y_test_arr):
     Returns:
     -------
     tuple:
-        Scaled training, evaluation and test sets
+        prediction of reg on test set and y_test (= truth)
     """
+
+    predictions = scaler.inverse_transform(reg.predict(X_test_arr).reshape(-1, 1))
     truths = scaler.inverse_transform(y_test_arr)
-    predictions = scaler.inverse_transform(
-        reg.predict(X_test_arr).reshape(-1, 1))
-    predictions = np.array([0 if pred < 0 else 2000 if pred > 2000 else pred for pred in predictions])
+
+    # Cut unrealistic predictions by min/max value that occured in dataset
+    # 2080kW for kelmarsh, 930kW for ueps, 840kW for uebb
+    power_max = 2080 if uk else 930
+    predictions = [0 if pred < 0 
+                   else 
+                   power_max if pred > power_max 
+                   else 
+                   float(pred) 
+                   for pred in predictions
+                   ]
     
-    
+    predictions = np.array(predictions)
+
     return predictions, truths
 
 
