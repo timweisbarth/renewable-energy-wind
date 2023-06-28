@@ -47,7 +47,7 @@ The benchmark was slightly beaten / met by OLS on all windfarms for all time hor
 | Beberide 1 day horizon  | 178.472 |         196.742  | 130.307  |        151.508  |
 
 <p align="center">
-<img src="fig/Beberude_comparison_pred_truth" width="300">
+<img src="fig/Beberude_comparison_pred_truth.png" width="300">
 </p>
 
 
