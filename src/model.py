@@ -2,6 +2,9 @@ import xgboost as xgb
 from sklearn.linear_model import LinearRegression
 from sklearn.metrics import mean_squared_error, mean_absolute_error
 import numpy as np
+from sklearn.model_selection import RandomizedSearchCV
+import re
+from sklearn.ensemble import RandomForestRegressor
 
 
 def scale_data(scaler, X_train, X_val, X_test, y_train, y_val, y_test):
@@ -48,21 +51,78 @@ def train_model(model_name, X_train, X_val, y_train, y_val):
         Scaled training, evaluation and test sets
     """
 
-    params = {"xgboost": {"n_estimators": 1000, "early_stopping_rounds": 50},
+    params = {"xgboost": {'n_estimators': 500, 'max_depth': 5, 'learning_rate': 0.01},
               "linreg": {},
               "auto": {}
               }
-    params = params[model_name]
+    
 
     if model_name == "linreg":
+
+        params = params[model_name]
         model = LinearRegression(**params)
         model.fit(np.concatenate([X_train, X_val]),
                   np.concatenate([y_train, y_val]))
-    if model_name == "xgboost":
-        model = xgb.XGBRegressor(**params)
+    
+    if model_name == "xgboost_HPO":
+
+        # Define the parameter grid for HPO
+        param_grid = {
+            'max_depth': [3, 5, 6, 7],
+            'learning_rate': [0.1, 0.02],
+            'n_estimators': [350, 500, 1000, 1500],
+            'subsample': [0.8, 0.9, 1.0],
+            'colsample_bytree': [0.8, 0.9, 1.0],
+            'gamma': [0, 0.1, 0.2],
+            'reg_alpha': [0, 0.1, 0.5],
+            'reg_lambda': [0, 0.1, 0.5]
+        }
+
+        
+        #  Create a XGBRegressor instance
+        xgbr = xgb.XGBRegressor()
+
+        # Instantiate the grid search
+        grid_search = RandomizedSearchCV(estimator=xgbr, 
+                                   param_distributions=param_grid, 
+                                   n_iter = 20,
+                                   verbose=10,
+                                   scoring='neg_mean_squared_error',
+                                   cv=2, 
+                                   n_jobs=-1)
+
+        # Fit the grid search to the data
+        grid_search.fit(np.concatenate([X_train, X_val]),
+                        np.concatenate([y_train, y_val]))
+
+        # Print and prepare best params for model fitting
+        best_params = grid_search.best_params_
+        params["xgboost"] = best_params
+        print(best_params)
+    
+    if re.match(r"^xgboost\w*", model_name):
+
+        params = params["xgboost"]
+        model = xgb.XGBRegressor(**params, early_stopping_rounds = 50)
         model.fit(X_train, y_train,
                   eval_set=[(X_train, y_train), (X_val, y_val)],
-                  verbose=False)
+                  verbose=True)
+        # Get the default parameters
+        default_parameters = model.get_params()
+
+        # Print the default parameters
+        for param_name, value in default_parameters.items():
+            print(f"{param_name} : {value}")
+    
+    if model_name == "rf":
+
+        # Create a Random Forest Regressor object with the desired parameters
+        model = RandomForestRegressor(n_estimators=200, max_depth=6)
+        
+        # Fit the model to the training data
+        model.fit(np.concatenate([X_train, X_val]),
+                np.concatenate([y_train, y_val]).ravel())
+        
 
     return model
 

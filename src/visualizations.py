@@ -29,10 +29,13 @@ def plot_models(name_of_farm, models):
         ax[i].set_title(model["horizon"])  # Set title for each subplot
         ax[i].legend()  # Display the legend
 
-    plt.tight_layout()  # To prevent overlapping of subplots
+    plt.tight_layout()
     fig.suptitle(
         f"{name_of_farm} wind farm: Comparison of power predictions",
         fontsize=13, y=1.02)
+    
+    plt.savefig(f"./../fig/{name_of_farm}_comparison_pred_truth")
+
     plt.show()
 
 
