@@ -2,7 +2,7 @@ import preprocessing as pp
 import model as m
 
 
-def pipeline(df, model_name, uk, shifts, non_nan_percentage,
+def pipeline(df, models_names, dataset_name, shifts, non_nan_percentage,
              col_to_be_lagged, val_ratio, scalers):
     """ Wrapper for pipeline_worker
 
@@ -20,9 +20,9 @@ def pipeline(df, model_name, uk, shifts, non_nan_percentage,
     models = []
     for i, shift in enumerate(shifts):
         model = pipeline_worker(df,
-                                model_name,
-                                uk,
-                                shift,
+                                models_names[i],
+                                dataset_name,
+                                shifts[i],
                                 non_nan_percentage,
                                 col_to_be_lagged,
                                 val_ratio,
@@ -31,7 +31,7 @@ def pipeline(df, model_name, uk, shifts, non_nan_percentage,
     return models
 
 
-def pipeline_worker(df, model_name, uk, shift, non_nan_percentage,
+def pipeline_worker(df, model_name, dataset_name, shift, non_nan_percentage,
                     col_to_be_lagged, val_ratio, scaler):
     """ Executes the  ML-pipeline as specified below
 
@@ -41,8 +41,8 @@ def pipeline_worker(df, model_name, uk, shift, non_nan_percentage,
       data
     model_name: string
         Name of the model to be used
-    uk: bool
-      Is the input df from the uk dataset?
+    dataset_name: string
+      From which farm is the dataset?
     shift: int ∈ {1,6,144}
       Number of time steps the target column gets shifted e.g. 1 hour = 6 * 10min
     non_nan_percentage: int ∈ [0,100]
@@ -62,7 +62,7 @@ def pipeline_worker(df, model_name, uk, shift, non_nan_percentage,
 
     X_train, X_val, X_test, y_train, y_val, y_test = \
         pp.all_preproc_steps(df=df,
-                             uk=uk,
+                             dataset_name=dataset_name,
                              shift=shift,
                              non_nan_percentage=non_nan_percentage,
                              col_to_be_lagged=col_to_be_lagged,
@@ -80,17 +80,17 @@ def pipeline_worker(df, model_name, uk, shift, non_nan_percentage,
     reg = m.train_model(model_name, X_train_arr,
                         X_val_arr, y_train_arr, y_val_arr)
 
-    predictions, truths = m.predict_and_inv_scaler(reg, uk, scaler, X_test_arr, y_test_arr)
+    predictions, truths = m.predict_and_inv_scaler(reg, dataset_name, scaler, X_test_arr, y_test_arr)
     
 
     rmse, mae = m.model_metrics(predictions, truths)
 
-    name = {1: "10min horizon", 6: "1 hour horizon",
+    horizon = {1: "10min horizon", 6: "1 hour horizon",
             144: "1 day horizon"}[shift]
 
-    print(f"Finished training model {name}")
+    print(f"Finished training on {dataset_name} for {horizon}")
 
     return {
-        "name": name, "rmse": rmse, "mae": mae,
+        "horizon": horizon, "rmse": rmse, "mae": mae,
         "X_test": X_test, "predictions": predictions, "truths": truths
     }

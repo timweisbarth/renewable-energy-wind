@@ -9,7 +9,7 @@ https://towardsdatascience.com/building-rnn-lstm-and-gru-for-time-series-using-p
 
 
 def all_preproc_steps(
-        df, uk, shift, non_nan_percentage,
+        df, dataset_name, shift, non_nan_percentage,
         col_to_be_lagged, val_ratio):
     """Apply all preprocessing steps. For description see individual functions.
 
@@ -17,15 +17,15 @@ def all_preproc_steps(
     --------
     X_train, X_val, X_test, y_train, y_val, y_test.
     """
-    df = preproc1_names_and_index(df, uk)
-    df = preproc2_nans(df, uk, non_nan_percentage)
+    df = preproc1_names_and_index(df, dataset_name)
+    df = preproc2_nans(df, dataset_name, non_nan_percentage)
     df = preproc3_featgen(df, shift, col_to_be_lagged)
     df = preproc4_train_val_test_split(
-        df, uk, f'power_next_{shift}', val_ratio)
+        df, dataset_name, f'power_next_{shift}', val_ratio)
     return df
 
 
-def preproc1_names_and_index(df, uk):
+def preproc1_names_and_index(df, dataset_name):
     """Change the name of the target column to "power" and index to "time"
     Make index a datetime object
 
@@ -33,14 +33,14 @@ def preproc1_names_and_index(df, uk):
     -----------
     df: pd.DataFrame
       data
-    uk: bool
-      Is the input df from the uk dataset?
+    dataset_name: string
+      from which farm is the dataset?
 
     Returns:
     -------
     pd.DataFrame
     """
-    if uk:
+    if dataset_name == "kwf":
         df = df.rename(columns={"Power (kW)": "power",
                        '# Date and time': 'time'})
     else:
@@ -52,7 +52,7 @@ def preproc1_names_and_index(df, uk):
     return df
 
 
-def preproc2_nans(df, uk, non_nan_percentage):
+def preproc2_nans(df, dataset_name, non_nan_percentage):
     """Drop columns if too many nans. Interpolate for inside NaNs,
     fill rest with next valid value
 
@@ -60,8 +60,8 @@ def preproc2_nans(df, uk, non_nan_percentage):
     -----------
     df: pd.DataFrame
       data
-    uk: bool
-      Is the input df from the uk dataset?
+    dataset_name: string
+      From which farm is the dataset?
     non_nan_percentage: float
       Require non_nan_percentage % many non-NaN values for a column to remain.
 
@@ -69,7 +69,7 @@ def preproc2_nans(df, uk, non_nan_percentage):
     -------
     pd.DataFrame
     """
-    if uk:
+    if dataset_name == "kwf":
         # Mostly NaNs until 2016-01-21
         df = df["2016-01-21":]
 
@@ -151,14 +151,14 @@ def preproc3_featgen(df, shift, col_to_be_lagged):
     return df
 
 
-def preproc4_train_val_test_split(df, uk, target_col, val_ratio):
+def preproc4_train_val_test_split(df, dataset_name, target_col, val_ratio):
     """Split data in train, validation and test set
 
     Parameters:
     -----------
     df: pd.DataFrame
-    uk: bool
-      Is df from the uk wind farm?
+    dataset_name: string
+      From which farm is the dataset?
     target_col: string
       Column that is to be predicted
     val_ratio: float
@@ -175,7 +175,7 @@ def preproc4_train_val_test_split(df, uk, target_col, val_ratio):
     X = df.drop(columns=[target_col])
 
     # Split data in train and test according to given benchmark
-    if uk:
+    if dataset_name == "kwf":
         X_train, X_test, y_train, y_test = X[:'2020-07-01'], \
             X['2020-07-01':], y[:'2020-07-01'], y['2020-07-01':]
     else:

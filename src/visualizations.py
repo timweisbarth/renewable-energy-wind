@@ -26,7 +26,7 @@ def plot_models(name_of_farm, models):
                    model["predictions"], label='Prediction')
         ax[i].set_xlabel('dates')   # Set x-axis label
         ax[i].set_ylabel('power [kW]')   # Set y-axis label
-        ax[i].set_title(model["name"])  # Set title for each subplot
+        ax[i].set_title(model["horizon"])  # Set title for each subplot
         ax[i].legend()  # Display the legend
 
     plt.tight_layout()  # To prevent overlapping of subplots
@@ -74,7 +74,7 @@ def plot_metrics(name_of_farm, models):
     # Extract the relevant details for the table
     table_data = [
         [
-            name_of_farm + " " + model["name"],
+            name_of_farm + " " + model["horizon"],
             model["rmse"],
             bm["rmse"],
             model["mae"],

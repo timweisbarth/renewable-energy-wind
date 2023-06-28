@@ -38,12 +38,12 @@ def scale_data(scaler, X_train, X_val, X_test, y_train, y_val, y_test):
         y_train_arr, y_val_arr, y_test_arr
 
 
-def train_model(type, X_train, X_val, y_train, y_val):
+def train_model(model_name, X_train, X_val, y_train, y_val):
     """ Trains model chosen by type
 
      Parameters:
     -----------
-    type: string
+    model_name: string
         Name of model choice
     X_train, X_val, y_train, y_val
         Training and evaluation sets
@@ -58,7 +58,7 @@ def train_model(type, X_train, X_val, y_train, y_val):
               "linreg":{},
               "auto":{}
     }
-    params = params[type]
+    params = params[model_name]
 
     os.environ["OPENBLAS_NUM_THREADS"] = "4"
 
@@ -70,8 +70,8 @@ def train_model(type, X_train, X_val, y_train, y_val):
     #                       n_jobs=4,  # This will use 4 cores
     #                       memory_limit=2048
     #                       )
-   # 
-   #     # Fit the model
+    #
+    #    # Fit the model
     #    reg.fit(X_train, y_train)
     #    # Summary statistics
     #    print(reg.sprint_statistics())
@@ -79,10 +79,10 @@ def train_model(type, X_train, X_val, y_train, y_val):
     #    print(reg.show_models())
         
 
-    if type == "linreg":
+    if model_name == "linreg":
         model = LinearRegression(**params)
         model.fit(np.concatenate([X_train, X_val]),np.concatenate([y_train,y_val]))
-    if type == "xgboost":
+    if model_name == "xgboost":
         model = xgb.XGBRegressor(**params)
         model.fit(X_train, y_train,
             eval_set=[(X_train, y_train), (X_val, y_val)],
@@ -91,15 +91,15 @@ def train_model(type, X_train, X_val, y_train, y_val):
     return model
 
 
-def predict_and_inv_scaler(reg, uk, scaler, X_test_arr, y_test_arr):
+def predict_and_inv_scaler(reg, dataset_name, scaler, X_test_arr, y_test_arr):
     """Returns model's predictions on test data and inverts the scaling
 
     Parameters:
     -----------
     reg:
         Learnt model choice
-    uk:
-        Is the model of the uk dataset?
+    dataset_name: string
+      From which farm is the dataset?
     scaler: sklearn.preprocessing
         e.g. MinMaxScaler
     X_test_arr, y_test_arr: ndarrays
@@ -115,8 +115,10 @@ def predict_and_inv_scaler(reg, uk, scaler, X_test_arr, y_test_arr):
     truths = scaler.inverse_transform(y_test_arr)
 
     # Cut unrealistic predictions by min/max value that occured in dataset
-    # 2080kW for kelmarsh, 930kW for ueps, 840kW for uebb
-    power_max = 2080 if uk else 930
+    # 2080kW for kwf, 930kW for ueps, 840kW for uebb
+    power_max = 2080 if dataset_name == "kwf" else \
+                930 if dataset_name == "ueps" else 840
+    
     predictions = [0 if pred < 0 
                    else 
                    power_max if pred > power_max 
