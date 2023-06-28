@@ -44,7 +44,7 @@ def pipeline_worker(df, model_name, dataset_name, shift, non_nan_percentage,
     dataset_name: string
       From which farm is the dataset?
     shift: int ∈ {1,6,144}
-      Number of time steps the target column gets shifted e.g. 1 hour = 6 * 10min
+      # time steps the target column gets shifted e.g. 1 hour = 6*10min
     non_nan_percentage: int ∈ [0,100]
         Require non_nan_percentage % many non-NaN values for a column to remain
     col_to_be_lagged: list
@@ -80,13 +80,13 @@ def pipeline_worker(df, model_name, dataset_name, shift, non_nan_percentage,
     reg = m.train_model(model_name, X_train_arr,
                         X_val_arr, y_train_arr, y_val_arr)
 
-    predictions, truths = m.predict_and_inv_scaler(reg, dataset_name, scaler, X_test_arr, y_test_arr)
-    
+    predictions, truths = m.predict_and_inv_scaler(
+        reg, dataset_name, scaler, X_test_arr, y_test_arr)
 
     rmse, mae = m.model_metrics(predictions, truths)
 
     horizon = {1: "10min horizon", 6: "1 hour horizon",
-            144: "1 day horizon"}[shift]
+               144: "1 day horizon"}[shift]
 
     print(f"Finished training on {dataset_name} for {horizon}")
 

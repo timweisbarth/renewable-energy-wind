@@ -96,7 +96,7 @@ def generate_cyclic_features(df, col_name, period, start_num=0):
     --------
     pd.DataFrame
     """
-    
+
     kwargs = {
         f'sin_{col_name}': lambda x: np.sin(2*np.pi*(
             df[col_name] - start_num)/period),
@@ -133,7 +133,7 @@ def preproc3_featgen(df, shift, col_to_be_lagged):
     lags = {1: [1, 2, 3, 6, 12, 24], 6: [1, 2, 6, 12, 24, 48],
             144: [1, 2, 6, 12, 24, 48, 100, 144]}[shift]
     for lag in lags:
-        
+
         for col_name in col_to_be_lagged:
             df[f"{col_name}_lag{lag}"] = df[f"{col_name}"].shift(lag)
 

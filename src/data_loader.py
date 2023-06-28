@@ -218,14 +218,14 @@ def load_ueps_data(from_raw):
             "lidar_wind_speed", "lidar_wind_direction",
             "lidar_wind_speed_std", "lidar_ws_u",
             "lidar_ws_v", "lidar_ws_w", "lidar_availability"
-            ]
+        ]
         features_with_height_dim = [
             "wind_speed", "wind_direction",
             "wind_speed_std", "wind_direction_std", "wind_speed_max",
             "wind_speed_min", "wind_speed_cube", "air_temperature",
             "relative_humidity", "UST", "UST_flag", "HS", "HS_flag",
             "TKE", "LMO"
-            ]
+        ]
 
         ueps = flatten_multiindex(
             ueps, features_with_height_dim, features_with_range_dim)
