@@ -30,16 +30,21 @@
 - **Approach**: More or less the same approach taken for all three datasets. For each dataset: 
     1. Parse data to .csv and ignore all data but the turbine of interest (see `data_loader.py`)
     2. Make time-series data a supervised problem and generate smart features (see `preprocessing.py`)
-    3. Train xgboost on scaled data for each farm and each prediction horizon (i.e., 3 farms * 3 predictions = 9 models) (see `model.py`)
-    4. Visualize results (see `visualizations.py`)
+    3. Train ordinary linear least squares (=OLS) on scaled data for each farm and each prediction horizon (i.e., 3 farms * 3 predictions = 9 models) (see `model.py`)
+    4. Try out different approaches with HPO, if the benchmark was not beaten by OLS
+    5. Visualize results (see `visualizations.py`)
 
-A **more detailed** documentation of the approach can be found in the `src` folder
+A **more detailed** documentation of the approach can be found in the `src` folder in the docstring of the functions
 
 ## Results
-Beaten benchmark in most cases
-kwf: 
-uebb:
-ueps: 
+
+The benchmark was slightly beaten / met by OLS on all windfarms for all time horizons except for the 10min time horizon of Kelmarsh wind farm. There xgboost with HPO was used. Below you can find the performance metrics of Bebride wind farm together with plot that shows the comparison between prediction and ground truth.
+
+| Model Name              |    RMSE |   Benchmark_RMSE |      MAE |   Benchmark_MAE |
+|:------------------------|--------:|-----------------:|---------:|----------------:|
+| Beberide 10min horizon  |  52.419 |          55.4172 |  34.4326 |         36.245  |
+| Beberide 1 hour horizon | 111.705 |         119.25   |  79.5705 |         81.9437 |
+| Beberide 1 day horizon  | 178.472 |         196.742  | 130.307  |        151.508  |
 
 <p align="center">
 <img src="/structure_of_data_folder.png" width="300">
