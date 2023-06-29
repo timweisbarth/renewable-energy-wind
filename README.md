@@ -31,14 +31,14 @@
     1. Parse data to .csv and ignore all data but the turbine of interest (see `data_loader.py`)
     2. Make time-series data a supervised problem and generate smart features (see `preprocessing.py`)
     3. Train ordinary linear least squares (=OLS) on scaled data for each farm and each prediction horizon (i.e., 3 farms * 3 predictions = 9 models) (see `model.py`)
-    4. Try out different approaches with HPO, if the benchmark was not beaten by OLS
+    4. Try out different approaches with HPO, if the benchmark was not beaten by OLS (see `model.py`)
     5. Visualize results (see `visualizations.py`)
 
 A **more detailed** documentation of the approach can be found in the `src` folder in the docstring of the functions
 
 ## Results
 
-The benchmark was slightly beaten / met by OLS on all windfarms for all time horizons except for the 10min time horizon of Kelmarsh wind farm. There xgboost with HPO was used. Below you can find the performance metrics of Bebride wind farm together with plot that shows the comparison between prediction and ground truth.
+The benchmark was slightly beaten / met by OLS on all windfarms for all time horizons except for the 10min time horizon of Kelmarsh wind farm. Therefore xgboost with HPO was used only here. As an example, below you can find the performance metrics of Bebride wind farm together with plot that shows the comparison between prediction and ground truth.
 
 | Model Name              |    RMSE |   Benchmark_RMSE |      MAE |   Benchmark_MAE |
 |:------------------------|--------:|-----------------:|---------:|----------------:|
@@ -50,6 +50,7 @@ The benchmark was slightly beaten / met by OLS on all windfarms for all time hor
 <img src="/fig/Beberide_comparison_pred_truth.png" width="900">
 </p>
 
+## Interpretation of results
 
 ## Sidenotes:
 - **Dimensionality reduction**: Manually drop columns if too many NaNs and collapse height and range dimension of the Brazilian datasets to binary
