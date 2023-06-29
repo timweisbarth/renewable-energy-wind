@@ -40,7 +40,7 @@ A **more detailed** documentation of the approach can be found in the `src` fold
 
 The benchmark was slightly beaten / met by OLS on all windfarms for all time horizons except for the 10min time horizon of Kelmarsh wind farm. Therefore xgboost with HPO was used only here. As an example, below you can find the performance metrics of Bebride wind farm together with plot that shows the comparison between prediction and ground truth.
 
-| Model Name              |    RMSE |   Benchmark_RMSE |      MAE |   Benchmark_MAE |
+| Model Name              |OLS_RMSE |   Benchmark_RMSE |  OLS_MAE |   Benchmark_MAE |
 |:------------------------|--------:|-----------------:|---------:|----------------:|
 | Beberide 10min horizon  |  52.419 |          55.4172 |  34.4326 |         36.245  |
 | Beberide 1 hour horizon | 111.705 |         119.25   |  79.5705 |         81.9437 |
