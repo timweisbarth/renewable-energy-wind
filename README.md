@@ -1,22 +1,20 @@
 # How to get started
 
-1. **Clone git repo**
-
-2. **Download all data of the following websites**:
+1. **Clone repo and download all data of the following websites**:
   - Two Brazilian datasets: https://zenodo.org/record/1475197#.ZD6iMxXP2WC
   - Uk dataset: https://zenodo.org/record/5841834#.ZEajKXbP2BQ
     
-3. **Store data in `data/raw` folder** such that it looks like this:
+2. **Store data in `data/raw` folder** such that it looks like this:
 <p align="center">
 <img src="fig/structure_of_data_folder.png" width="300">
 </p>
 
 
-4. **To get an overview start by looking at the `doc` folder**
+3. **To get an overview start by looking at the `doc` folder**
     - Run `create_processed_data.ipynb` once in the beginning
     - There is one main IPython notebook per farm containing the high-level call of functions and the results (called `..._main`)
 
-5. **`Exp` folder** contains experiments and data exploration
+4. **`Exp` folder** contains experiments and data exploration
 
 
 # Summary of task, approach and results 
