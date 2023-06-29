@@ -38,7 +38,7 @@ A **more detailed** documentation of the approach can be found in the `src` fold
 
 ## Results
 
-The benchmark was slightly beaten / met by OLS in most cases. OLS failed to beat the benchmark for the Kelmarsh 10min horizon aswell as 1 day horizon. Therefore xgboost optimized hyperparameters was used here. As an example, below you can find the performance metrics of Beberide wind farm together with plot that shows the comparison between prediction and ground truth.
+The benchmark was slightly beaten on all wind farms for all horizons. Xgboost worked best for Kelmarsh wind farm, whereas a simple OLS was enough to beat the benchmark for Bebride wind farm. As an example, below you can find the performance metrics of Beberide wind farm together with plot that shows the comparison between prediction and ground truth.
 
 | Model Name              |OLS_RMSE |   Benchmark_RMSE |  OLS_MAE |   Benchmark_MAE |
 |:------------------------|--------:|-----------------:|---------:|----------------:|
@@ -52,9 +52,18 @@ The benchmark was slightly beaten / met by OLS in most cases. OLS failed to beat
 
 ## Interpretation of results
 
-As expected, the model is best at classifying for the shortest horizon. 
+As expected, the model is best at classifying for the shortest horizon and does reasonably well on the longer horizons, considering that this algorithm knows no weather forecast or any other additional information.
 
 ## Outlook
+
+As this is only a seminar project, there are many areas with the potential to improve the metrics. For me, it seems most promising to next look at:
+- preprocessing: 
+    1. Investigate horizontal lines in wind-power plots
+    2. Investigate dimensionality reduction techniques
+        - PCA, Correlations, fancyimpute, ...
+    3. Design smarter features
+- Try to find better model:
+    - DNN, especially RNNs, ...
 
 
 
