@@ -41,7 +41,7 @@ def train_model(model_name, X_train, X_val, y_train, y_val):
      Parameters:
     -----------
     model_name: string
-        Name of model choice
+        Name of model choice e.g. xgboost
     X_train, X_val, y_train, y_val
         Training and evaluation sets
 
@@ -51,9 +51,17 @@ def train_model(model_name, X_train, X_val, y_train, y_val):
         Scaled training, evaluation and test sets
     """
 
-    params = {"xgboost": {'n_estimators': 500, 'max_depth': 5, 'learning_rate': 0.01},
-              "linreg": {},
-              "auto": {}
+    params = {
+        "xgboost1": {
+            'n_estimators': 1000,
+            },
+        "xgboost2": {
+            'subsample': 1.0, 'reg_lambda': 0.1,
+            'reg_alpha': 0.1, 'n_estimators': 1000,
+            'max_depth': 3, 'learning_rate': 0.02, 
+            'gamma': 0.1, 'colsample_bytree': 0.8
+            },            
+        "linreg": {},
               }
     
 
@@ -97,22 +105,16 @@ def train_model(model_name, X_train, X_val, y_train, y_val):
 
         # Print and prepare best params for model fitting
         best_params = grid_search.best_params_
-        params["xgboost"] = best_params
+        params["xgboost_HPO"] = best_params
         print(best_params)
     
     if re.match(r"^xgboost\w*", model_name):
-
-        params = params["xgboost"]
+            
+        params = params[model_name]
         model = xgb.XGBRegressor(**params, early_stopping_rounds = 50)
         model.fit(X_train, y_train,
                   eval_set=[(X_train, y_train), (X_val, y_val)],
-                  verbose=True)
-        # Get the default parameters
-        default_parameters = model.get_params()
-
-        # Print the default parameters
-        for param_name, value in default_parameters.items():
-            print(f"{param_name} : {value}")
+                  verbose=False)
     
     if model_name == "rf":
 
