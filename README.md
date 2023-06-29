@@ -59,27 +59,17 @@ The benchmark was slightly beaten on all wind farms for all horizons. Xgboost wo
 <img src="/fig/Beberide_comparison_pred_truth.png" width="900">
 </p>
 
-## Interpretation of plot
+## Interpretation of results
 
-As expected, the model is best at classifying for the shortest horizon and does reasonably well on the longer horizons, considering that this algorithm knows no weather forecast or any other additional information. The plot shows, that the model was able to pick up the daily wind cycles for all three horizons.
+As expected, the models are best at classifying for the shortest horizon and except for Kelmarsh wind farm do reasonably well on the longer horizons, considering that the model knows no weather forecast or any other additional information from the future. The examplatory plot shows, that the model was able to pick up the daily wind cycles for all three horizons.
 
 ## Outlook
 
 As this is only a seminar project, there are many areas with the potential to improve the metrics. For me, it seems most promising to next look at:
-- preprocessing: 
+- Preprocessing: 
     1. Investigate horizontal lines in wind-power plots
     2. Investigate dimensionality reduction techniques
         - PCA, Correlations, fancyimpute, ...
     3. Design smarter features
 - Try to find better model:
     - DNN, especially RNNs, ...
-
-
-
-## Sidenotes:
-- **Dimensionality reduction**: Manually drop columns if too many NaNs and collapse height and range dimension of the Brazilian datasets to binary
-- **Model selection and HPO**: Manually chose xgboost due to good results, with hand-tuned hyperparameters
-- **No global model or transfer learning approach taken**
-- For the brazilian datasets: Lots of useful feature information in the xarray data structure that is lost once transferred to pandas
-
-
