@@ -54,16 +54,15 @@ def train_model(model_name, X_train, X_val, y_train, y_val):
     params = {
         "xgboost1": {
             'n_estimators': 1000,
-            },
+        },
         "xgboost2": {
             'subsample': 1.0, 'reg_lambda': 0.1,
             'reg_alpha': 0.1, 'n_estimators': 1000,
-            'max_depth': 3, 'learning_rate': 0.02, 
+            'max_depth': 3, 'learning_rate': 0.02,
             'gamma': 0.1, 'colsample_bytree': 0.8
-            },            
+        },
         "linreg": {},
-              }
-    
+    }
 
     if model_name == "linreg":
 
@@ -71,7 +70,7 @@ def train_model(model_name, X_train, X_val, y_train, y_val):
         model = LinearRegression(**params)
         model.fit(np.concatenate([X_train, X_val]),
                   np.concatenate([y_train, y_val]))
-    
+
     if model_name == "xgboost_HPO":
 
         # Define the parameter grid for HPO
@@ -86,18 +85,17 @@ def train_model(model_name, X_train, X_val, y_train, y_val):
             'reg_lambda': [0, 0.1, 0.5]
         }
 
-        
         #  Create a XGBRegressor instance
         xgbr = xgb.XGBRegressor()
 
         # Instantiate the grid search
-        grid_search = RandomizedSearchCV(estimator=xgbr, 
-                                   param_distributions=param_grid, 
-                                   n_iter = 20,
-                                   verbose=10,
-                                   scoring='neg_mean_squared_error',
-                                   cv=2, 
-                                   n_jobs=-1)
+        grid_search = RandomizedSearchCV(estimator=xgbr,
+                                         param_distributions=param_grid,
+                                         n_iter=20,
+                                         verbose=10,
+                                         scoring='neg_mean_squared_error',
+                                         cv=2,
+                                         n_jobs=-1)
 
         # Fit the grid search to the data
         grid_search.fit(np.concatenate([X_train, X_val]),
@@ -107,24 +105,23 @@ def train_model(model_name, X_train, X_val, y_train, y_val):
         best_params = grid_search.best_params_
         params["xgboost_HPO"] = best_params
         print(best_params)
-    
+
     if re.match(r"^xgboost\w*", model_name):
-            
+
         params = params[model_name]
-        model = xgb.XGBRegressor(**params, early_stopping_rounds = 50)
+        model = xgb.XGBRegressor(**params, early_stopping_rounds=50)
         model.fit(X_train, y_train,
                   eval_set=[(X_train, y_train), (X_val, y_val)],
                   verbose=False)
-    
+
     if model_name == "rf":
 
         # Create a Random Forest Regressor object with the desired parameters
         model = RandomForestRegressor(n_estimators=200, max_depth=6)
-        
+
         # Fit the model to the training data
         model.fit(np.concatenate([X_train, X_val]),
-                np.concatenate([y_train, y_val]).ravel())
-        
+                  np.concatenate([y_train, y_val]).ravel())
 
     return model
 

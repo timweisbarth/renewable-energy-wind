@@ -33,7 +33,7 @@ def plot_models(name_of_farm, models):
     fig.suptitle(
         f"{name_of_farm} wind farm: Comparison of power predictions",
         fontsize=13, y=1.02)
-    
+
     plt.savefig(f"./../fig/{name_of_farm}_comparison_pred_truth")
 
     plt.show()
