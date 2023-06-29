@@ -38,21 +38,30 @@ A **more detailed** documentation of the approach can be found in the `src` fold
 
 ## Results
 
-The benchmark was slightly beaten on all wind farms for all horizons. Xgboost worked best for Kelmarsh wind farm, whereas a simple OLS was enough to beat the benchmark for Bebride wind farm. As an example, below you can find the performance metrics of Beberide wind farm together with plot that shows the comparison between prediction and ground truth.
+The benchmark was slightly beaten on all wind farms for all horizons. Xgboost worked best for Kelmarsh wind farm, whereas a simple OLS was enough to beat the benchmark for Bebride (and Ueps) wind farm. As an example, below you can find the performance metrics of all wind farms as well as an examplatory plot of the ground truth vs the predcition for Beberide wind farm
 
-| Model Name              |OLS_RMSE |   Benchmark_RMSE |  OLS_MAE |   Benchmark_MAE |
+| Model Name              |    RMSE |   Benchmark_RMSE |      MAE |   Benchmark_MAE |
+|:------------------------|--------:|-----------------:|---------:|----------------:|
+| Kelmarsh 10min horizon  | 142.219 |          145.603 |  89.3621 |         91.5538 |
+| Kelmarsh 1 hour horizon | 247.4   |          263.749 | 169.839  |        183.286  |
+| Kelmarsh 1 day horizon  | 596.683 |          623.023 | 476.414  |        510.71   |
 |:------------------------|--------:|-----------------:|---------:|----------------:|
 | Beberide 10min horizon  |  52.419 |          55.4172 |  34.4326 |         36.245  |
 | Beberide 1 hour horizon | 111.705 |         119.25   |  79.5705 |         81.9437 |
 | Beberide 1 day horizon  | 178.472 |         196.742  | 130.307  |        151.508  |
+|:------------------------|--------:|-----------------:|---------:|----------------:|
+| Ueps 10min horizon      |  44.4573|              nan |  28.3013 |             nan |
+| Ueps 1 hour horizon     | 107.566 |              nan |  76.107  |             nan |
+| Ueps 1 day horizon      | 207.585 |              nan | 163.609  |             nan |
+
 
 <p align="center">
 <img src="/fig/Beberide_comparison_pred_truth.png" width="900">
 </p>
 
-## Interpretation of results
+## Interpretation of plot
 
-As expected, the model is best at classifying for the shortest horizon and does reasonably well on the longer horizons, considering that this algorithm knows no weather forecast or any other additional information.
+As expected, the model is best at classifying for the shortest horizon and does reasonably well on the longer horizons, considering that this algorithm knows no weather forecast or any other additional information. The plot shows, that the model was able to pick up the daily wind cycles for all three horizons.
 
 ## Outlook
 
