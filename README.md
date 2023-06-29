@@ -38,7 +38,7 @@ A **more detailed** documentation of the approach can be found in the `src` fold
 
 ## Results
 
-The benchmark was slightly beaten / met by OLS on all windfarms for all time horizons except for the 10min time horizon of Kelmarsh wind farm. Therefore xgboost with HPO was used only here. As an example, below you can find the performance metrics of Bebride wind farm together with plot that shows the comparison between prediction and ground truth.
+The benchmark was slightly beaten / met by OLS in most cases. OLS failed to beat the benchmark for the Kelmarsh 10min horizon aswell as 1 day horizon. Therefore xgboost optimized hyperparameters was used here. As an example, below you can find the performance metrics of Beberide wind farm together with plot that shows the comparison between prediction and ground truth.
 
 | Model Name              |OLS_RMSE |   Benchmark_RMSE |  OLS_MAE |   Benchmark_MAE |
 |:------------------------|--------:|-----------------:|---------:|----------------:|
@@ -51,6 +51,12 @@ The benchmark was slightly beaten / met by OLS on all windfarms for all time hor
 </p>
 
 ## Interpretation of results
+
+As expected, the model is best at classifying for the shortest horizon. 
+
+## Outlook
+
+
 
 ## Sidenotes:
 - **Dimensionality reduction**: Manually drop columns if too many NaNs and collapse height and range dimension of the Brazilian datasets to binary
