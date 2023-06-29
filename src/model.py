@@ -6,6 +6,15 @@ from sklearn.model_selection import RandomizedSearchCV
 import re
 from sklearn.ensemble import RandomForestRegressor
 
+"""
+Overview:
+---------
+scale_data(...):Scales the data according to given scaler
+train_model(...): Trains the specified model on the given data, if 
+            specified it can perfrom HPO before training
+redict_and_inv_scaler(...): Returns model's predictions on test data
+             and inverts the scaling
+"""
 
 def scale_data(scaler, X_train, X_val, X_test, y_train, y_val, y_test):
     """ Scales the data according to given scaler
@@ -50,7 +59,8 @@ def train_model(model_name, X_train, X_val, y_train, y_val):
     tuple
         Scaled training, evaluation and test sets
     """
-
+    
+    # params found by HPO
     params = {
         "xgboost1": {
             'n_estimators': 1000,
@@ -72,7 +82,7 @@ def train_model(model_name, X_train, X_val, y_train, y_val):
                   np.concatenate([y_train, y_val]))
 
     if model_name == "xgboost_HPO":
-
+        # HPO for xgboost:
         # Define the parameter grid for HPO
         param_grid = {
             'max_depth': [3, 5, 6, 7],
@@ -85,7 +95,7 @@ def train_model(model_name, X_train, X_val, y_train, y_val):
             'reg_lambda': [0, 0.1, 0.5]
         }
 
-        #  Create a XGBRegressor instance
+        # Create a XGBRegressor instance
         xgbr = xgb.XGBRegressor()
 
         # Instantiate the grid search

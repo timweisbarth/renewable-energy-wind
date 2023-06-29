@@ -1,6 +1,16 @@
 import pandas as pd
 import xarray
 
+"""
+Overview:
+---------
+load_kelmarsh_data(...): ...
+flatten_multiindex(...): Flatten multiindex df and take care of extra
+            dimensions
+load_uebb_data(...): ...
+load_ueps_data(...): ...
+"""
+
 
 def load_kelmarsh_data(from_raw):
     """ Load the data of the second turbine of kelmarsh wind farm from between
@@ -45,7 +55,7 @@ def load_kelmarsh_data(from_raw):
 
 
 def flatten_multiindex(df, features_with_height_dim, features_with_range_dim):
-    """ Flatten the multiindex rows of the df by generating new columns.
+    """ Flatten the multiindex rows of the df by generating new columns. 
 
         Example:
         --------
@@ -67,8 +77,10 @@ def flatten_multiindex(df, features_with_height_dim, features_with_range_dim):
             |2           |120            |220
             ...
 
-        Since range & height dimensions are not binary as in this example,
-        they will be split in two equally sized buckets before flattening
+        If the dimensions are not binary (e.g. range dimension has 26 buckets)
+        the function will make them binary first, before flattening. This 
+        behaviour is desirable because otherewise there would be too many
+        columns after flattening many of which contain NaNs
 
 
     Parameters
@@ -146,7 +158,8 @@ def flatten_multiindex(df, features_with_height_dim, features_with_range_dim):
 
 def load_uebb_data(from_raw):
     """ Load the data of the first turbine of uebb wind farm from between
-    2013 and 2014 (=all available data of this turbine).
+    2013 and 2014 (=all available data of this turbine). Flatten multi-
+    index (see flatten_multiindex()) for more information
 
     Parameters
     ----------
@@ -192,7 +205,8 @@ def load_uebb_data(from_raw):
 
 def load_ueps_data(from_raw):
     """ Load the data of the second turbine of ueps wind farm from between
-    2013 and 2014 (=all available data of this turbine).
+    2013 and 2014 (=all available data of this turbine). Flatten multi-
+    index (see flatten_multiindex()) for more information
 
     Parameters
     ----------
