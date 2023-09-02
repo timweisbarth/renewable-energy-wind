@@ -11,7 +11,8 @@ https://towardsdatascience.com/building-rnn-lstm-and-gru-for-time-series-using-p
 def all_preproc_steps(
         df, dataset_name, shift, non_nan_percentage,
         col_to_be_lagged, val_ratio):
-    """Apply all preprocessing steps. For description see individual functions.
+    """Apply all preprocessing steps. For description of parameters,
+       please see individual functions.
 
     Returns:
     --------
