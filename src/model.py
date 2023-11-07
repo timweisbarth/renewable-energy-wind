@@ -32,6 +32,10 @@ def scale_data(scaler, X_train, X_val, X_test, y_train, y_val, y_test):
         Scaled training, evaluation and test sets
     """
 
+    print(type(X_train))
+    print(X_train.columns)
+    print(X_train)
+    
     X_train_arr = scaler.fit_transform(X_train)
     X_val_arr = scaler.transform(X_val)
     X_test_arr = scaler.transform(X_test)
